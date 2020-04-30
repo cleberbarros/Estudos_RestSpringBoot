@@ -1,0 +1,24 @@
+package com.example.algamoney.api.exceptionhandler;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+//captura execessões das entidades 
+
+public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler{
+
+	//ESSE METODO TRATA MENSAGENS NÃO LIDAS.
+	// EXISTE VARIAS OUTROS METODOS HANDLE QUE PODEMOS UTILIZAR
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		
+		
+		//Aqui no retorno passei no body uma mensagem tipo string e o status foi modificado para BAD_RESQUEST
+		return handleExceptionInternal(ex, "Mensagem Invalida!", headers, HttpStatus.BAD_REQUEST, request);
+	}	
+}
