@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -38,7 +40,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler{
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		
 		String mensagemUsuario = messageSource.getMessage("mensagem.invalida",null, LocaleContextHolder.getLocale());
-		String mensagemDesenvolvedor = ex.getCause().toString();
+		String mensagemDesenvolvedor = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
 		
 		List<Erro>erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		//Aqui no retorno passei no body uma mensagem tipo string e o status foi modificado para BAD_RESQUEST
@@ -54,6 +56,21 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler{
 		List<Erro>erros = criarListaDeErros(ex.getBindingResult());  //em ex.getBindingResult() tem a lista de todos os erros eventualente ocorridos
 		
 		return handleExceptionInternal(ex,erros,headers, HttpStatus.BAD_REQUEST, request);
+	}
+	
+	/*CRIANDO O METODO DE NOME: handleEmptyResultDataAccessException QUE VAI CAPTURA E TRATAR A EXCEÇÃO : 
+	 * EmptyResultDataAccessException acontece QUANDO SE TENTA EXCLUIR INFORMAÇÃO NO BANCO QUE JÁ FOI EXCLUIDA  
+	*/
+	@ExceptionHandler({EmptyResultDataAccessException.class})
+//	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
+		
+		String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado",null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		
+		List<Erro>erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		
+		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
 	
 	private List<Erro> criarListaDeErros(BindingResult bindingResult){
