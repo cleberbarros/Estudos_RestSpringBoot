@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.example.algamoney.api.exceptionhandler.AlgamoneyExceptionHandler.Erro;
+import com.example.algamoney.api.service.exception.PessoaInexistenteOuInativaException;
+
 //captura execessões das entidades 
 
 @ControllerAdvice  //essa classe esta com essa anotação para poder OBSERVAR TODA A APLICAÇÃO
@@ -87,6 +90,20 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler{
 		List<Erro>erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
+	
+	
+	/*TRATANDO A EXCESSÃO LANÇADA NO SALVAR DA CLASSE LancamentoService.
+	 * */
+	@ExceptionHandler({PessoaInexistenteOuInativaException.class} )
+	public ResponseEntity<Object> handlePessoaInexistenteOuInativaException(PessoaInexistenteOuInativaException ex){
+		
+		String mensagemUsuario = messageSource.getMessage("pessoa.inexistente-ou-inativa",null, LocaleContextHolder.getLocale());
+		String mensagemDesenvolvedor = ex.toString();
+		Erro erro = new Erro(mensagemUsuario, mensagemDesenvolvedor);
+		List<Erro>erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+		
+		return ResponseEntity.badRequest().body(erros);
 	}
 	
 	private List<Erro> criarListaDeErros(BindingResult bindingResult){
