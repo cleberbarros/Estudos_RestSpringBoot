@@ -31,9 +31,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
         .inMemory().withClient("angular").secret(passwordEncoder().encode("@ngul@r0")).scopes("read", "write")
-        .authorizedGrantTypes("password")
-        .accessTokenValiditySeconds(1800)
-        .refreshTokenValiditySeconds(3600 * 12);     
+        .authorizedGrantTypes("password","refresh_token")  //adicionado "refresh_token" para trabalhar com refresh
+        .accessTokenValiditySeconds(20)
+        .refreshTokenValiditySeconds(3600 * 12);  // 24h para expirar o refresh_token     
     }
 
     @Override
@@ -42,7 +42,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
         endpoints.tokenStore(tokenStore()).tokenEnhancer(tokenEnhancerChain)
-        .authenticationManager(authenticationManager).reuseRefreshTokens(false);
+        .authenticationManager(authenticationManager)
+        .reuseRefreshTokens(false);  //configuração para quando solicitar o token venha um refresh_token 
     }
 
     @Bean
