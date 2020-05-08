@@ -30,7 +30,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
-        .inMemory().withClient("angular").secret(passwordEncoder().encode("@ngul@r0")).scopes("read", "write")
+        .inMemory().withClient("angular")
+        .secret(passwordEncoder().encode("@ngul@r0")).scopes("read", "write")
         .authorizedGrantTypes("password","refresh_token")  //adicionado "refresh_token" para trabalhar com refresh
         .accessTokenValiditySeconds(20)
         .refreshTokenValiditySeconds(3600 * 12);  // 24h para expirar o refresh_token     
