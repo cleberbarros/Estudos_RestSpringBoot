@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @EnableWebSecurity
@@ -18,13 +20,17 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @Configuration
 public class WebSecurityConfigurerAdapterCustom extends WebSecurityConfigurerAdapter {
 
+//    @Autowired
+//    private BCryptPasswordEncoder passwordEncoder;
+    
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     public void globalUserDetails(final AuthenticationManagerBuilder auth) throws Exception {
         // @formatter:off
-        auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder.encode("admin")).roles("USER");
+        //auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder.encode("admin")).roles("USER");
+    	auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -43,6 +49,10 @@ public class WebSecurityConfigurerAdapterCustom extends WebSecurityConfigurerAda
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/categorias");
+    }
+    
+    private PasswordEncoder passwordEncoder() {
+    	return new BCryptPasswordEncoder();
     }
 
 }
