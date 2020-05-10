@@ -32,7 +32,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
             .withClient("angular")
-	        .secret(passwordEncoder().encode("@ngul@r09")).scopes("read", "write") //scope posso definir os nomes conforme minhas regras de negocios e colocando nas classe de recursos nas anotações @PreAuthorize
+	        .secret(passwordEncoder().encode("@ngul@r0")).scopes("read", "write") //scope posso definir os nomes conforme minhas regras de negocios e colocando nas classe de recursos nas anotações @PreAuthorize
 	        .authorizedGrantTypes("password","refresh_token")  //adicionado "refresh_token" para trabalhar com refresh
 	        .accessTokenValiditySeconds(1800)
 	        .refreshTokenValiditySeconds(3600 * 12)  // 24h para expirar o refresh_token     
