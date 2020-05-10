@@ -37,8 +37,7 @@ public class CategoriaResource {
 	private ApplicationEventPublisher publisher;
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")  //CONFIGURANDO COM A ROLE NECESSÁRIO PELO USUÁRIO PARA ACESSAR O METODO
-	
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")  //CONFIGURANDO COM A ROLE NECESSÁRIO PELO USUÁRIO PARA ACESSAR O METODO
 	public List<Categoria> listar(){
 		return categoriaRepository.findAll();
 	}
@@ -47,8 +46,7 @@ public class CategoriaResource {
 
 	//O METODO CRIAR FEITO PELO CURSO
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')")
-	
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')and #oauth2.hasScope('write')")
 	public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
 		
 		Categoria categoriaSalva = categoriaRepository.save(categoria);
@@ -60,7 +58,7 @@ public class CategoriaResource {
 	}
 	
 	@GetMapping("/{codigo}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')and #oauth2.hasScope('read')")
 	public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo) {
 		
 		Optional<Categoria> categoria = categoriaRepository.findById(codigo);
