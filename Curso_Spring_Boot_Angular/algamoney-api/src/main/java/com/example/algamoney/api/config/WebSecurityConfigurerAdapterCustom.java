@@ -24,7 +24,7 @@ import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecur
 @EnableWebSecurity
 @EnableResourceServer
 @Configuration
-//@EnableGlobalMethodSecurity(prePostEnabled = true) // HABILITANDO A SEGURANÇA PARA OS METODOS
+
 
 public class WebSecurityConfigurerAdapterCustom extends WebSecurityConfigurerAdapter {
 
@@ -68,9 +68,6 @@ public class WebSecurityConfigurerAdapterCustom extends WebSecurityConfigurerAda
     	return new BCryptPasswordEncoder();
     }
 
-//	@Bean
-//	public MethodSecurityExpressionHandler createExpressionHandler() {
-//		return new  OAuth2MethodSecurityExpressionHandler();
-//	}
+
 
 }
