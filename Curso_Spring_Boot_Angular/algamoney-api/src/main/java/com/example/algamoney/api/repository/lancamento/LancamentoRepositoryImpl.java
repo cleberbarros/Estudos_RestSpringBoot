@@ -53,16 +53,17 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<ResumoLancamento> criteria = builder.createQuery(ResumoLancamento.class);
-		Root<Lancamento> root = criteria.from(Lancamento.class);
+		Root<Lancamento> root = criteria.from(Lancamento.class);  //1. SELECT FROM LANCAMENTO
 		
-		criteria.select(builder.construct(ResumoLancamento.class
+		//PRECISA SEGUIR A MESMA ORDEM DO CONSTRUTOR EM ResumoLancamento POIS AQUI ESTA CRIANDO O OBJETO ResumoLancamento
+		criteria.select(builder.construct(ResumoLancamento.class   					//2. CAMPOS DA CLAUSULA SELECT 
 				, root.get(Lancamento_.codigo), root.get(Lancamento_.descricao)
 				, root.get(Lancamento_.dataVencimento), root.get(Lancamento_.dataPagamento)
 				, root.get(Lancamento_.valor), root.get(Lancamento_.tipo)
 				, root.get(Lancamento_.categoria).get(Categoria_.nome)
 				, root.get(Lancamento_.pessoa).get(Pessoa_.nome)));
 		
-		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
+		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);   //3. CRIANDO O WHERE DA CLAUSULA SQL 
 		criteria.where(predicates);
 		
 		TypedQuery<ResumoLancamento> query = manager.createQuery(criteria);
