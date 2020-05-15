@@ -44,7 +44,7 @@ public class CategoriaResource {
 	
 
 
-	//O METODO CRIAR FEITO PELO CURSO .
+	//O METODO CRIAR FEITO PELO CURSO ..
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')and #oauth2.hasScope('write')")
 	public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
